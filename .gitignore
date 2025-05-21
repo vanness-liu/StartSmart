@@ -1,0 +1,42 @@
+# General
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.iml
+*.log
+
+# Python / Backend
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/.env
+backend/firebase_credentials.json  # IMPORTANT: Keep your Firebase key private!
+backend/instance/
+backend/.pytest_cache/
+backend/htmlcov/
+backend/.mypy_cache/
+
+# Flutter / Frontend
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/.packages
+frontend/build/
+frontend/*.iml
+frontend/*.lastbuildstate
+frontend/ios/Pods/
+frontend/ios/.symlinks/
+frontend/ios/Flutter/App.framework
+frontend/ios/Flutter/Flutter.framework
+# frontend/ios/Flutter/engine/ # Sometimes needed, sometimes not. Add if large.
+frontend/ios/Flutter/flutter_assets/
+frontend/ios/Runner/GeneratedPluginRegistrant.*
+frontend/android/.gradle/
+frontend/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+frontend/android/app/build/
+frontend/android/build/
+frontend/android/key.properties # If you store signing keys here, otherwise remove
+frontend/android/local.properties
