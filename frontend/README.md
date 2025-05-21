@@ -1,8 +1,4 @@
-# frontend
-
-A new Flutter project.
-
-## Getting Started
+## Getting Started with Flutter
 
 This project is a starting point for a Flutter application.
 
