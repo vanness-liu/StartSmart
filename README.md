@@ -25,22 +25,22 @@ This project aims to provide aspiring entrepreneurs with intelligent tools and r
 
 This project is a monorepo containing:
 
-StartSmart/
-├── backend/ # FastAPI Python backend
-│ ├── api/ # API endpoints (routers)
-│ ├── core/ # Core settings, configurations
-│ ├── models/ # Pydantic schemas
-│ ├── services/ # Business logic, external API integrations (Firebase, Gemini)
-│ ├── .env # Local environment variables (Gitignored)
-│ ├── .env.example # Template for .env
-│ ├── firebase_credentials.json # Firebase Admin SDK key (Gitignored)
-│ ├── main.py # Main FastAPI application
-│ └── requirements.txt
-├── frontend/ # Flutter application
-│ ├── lib/
-│ └── pubspec.yaml
-├── .gitignore
-└── README.md
+StartSmart/ <br>
+├── backend/ # FastAPI Python backend <br>
+│ ├── api/ # API endpoints (routers) <br>
+│ ├── core/ # Core settings, configurations <br>
+│ ├── models/ # Pydantic schemas <br>
+│ ├── services/ # Business logic, external API integrations (Firebase, Gemini) <br>
+│ ├── .env # Local environment variables (Gitignored) <br>
+│ ├── .env.example # Template for .env <br>
+│ ├── firebase_credentials.json # Firebase Admin SDK key (Gitignored) <br>
+│ ├── main.py # Main FastAPI application <br>
+│ └── requirements.txt <br>
+├── frontend/ # Flutter application <br>
+│ ├── lib/ <br>
+│ └── pubspec.yaml <br>
+├── .gitignore <br>
+└── README.md <br>
 
 ## 🚀 Getting Started
 
