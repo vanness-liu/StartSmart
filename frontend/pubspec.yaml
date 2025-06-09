@@ -60,6 +60,8 @@ flutter:
     - assets/khailee.jpg
     - assets/sivapalan.jpg
     - assets/renyi.jpg
+    - assets/Billy1.jpg
+    - assets/Billy2.jpg
     - assets/icons/Frame.svg
     - assets/icons/startsmart.svg
     - assets/icons/calendar.svg
@@ -67,6 +69,7 @@ flutter:
     - assets/icons/checklist.svg
     - assets/icons/spedometer.svg
     - assets/icons/video.svg
+    
 
   fonts:
     - family: Poppins

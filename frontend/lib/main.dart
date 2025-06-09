@@ -3,6 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'mentor_page.dart';
 import 'faq.dart';
 import 'chatbotPage.dart';
+import 'readinessquizPage.dart';
+import 'checkbox_page.dart';
 
 void main() {
   runApp(MentorApp());
@@ -37,8 +39,8 @@ class _MainScreenState extends State<MainScreen> {
   ];
 
   final List<Widget> pages = [
-    Center(child: Text("checkbox Page")),
-    Center(child: Text("readiness quiz Page")),
+    CheckboxPage(),
+    ReadinessquizPage(),
     ChatbotPage(),
     MentorPage(),
   ];
