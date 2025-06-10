@@ -27,18 +27,18 @@ class _FaqState extends State<Faq> {
       'answer': 'Start with freelancing, content creation, tutoring, or selling digital products online. Keep it flexible to suit your schedule.',
     },
   ],
-  'Legal & Registration': [
+  'Legal & Financial Structures': [
     {
-      'question': 'How do I register my business?',
-      'answer': 'Visit the local company registration portal, submit necessary documents (ID, business name, address), and pay a small fee.',
+      'question': 'What legal structures are available and when is each suitable (e.g., sole prop, partnership, LLP, Sdn Bhd)?',
+      'answer': 'Sole proprietorship: Best for solo, low-risk ventures.\nPartnership/LLP: Good for small co-founded service businesses.\nSendirian Berhad (Sdn Bhd): Ideal for startups seeking investors, liability protection, or future scaling.',
     },
     {
-      'question': 'Which legal structure is best for my business?',
-      'answer': 'It depends on your goals. Sole proprietorship is easy, Sdn Bhd (LLC) gives more protection and credibility.',
+      'question': 'What are suitable funding options for startups with limited capital?',
+      'answer': 'Bootstrapping: Best for early validation stages.\nGovernment grants: MDEC, SME Corp — ideal for tech or innovation-focused ideas.\nMicroloans: TEKUN, MARA for small B40 businesses.\nAngel investment: Suitable after MVP or early traction.',
     },
     {
-      'question': 'Do I need to trademark my business name?',
-      'answer': 'It’s not required, but recommended if your brand is unique and you plan to scale.',
+      'question': 'What financial tools/practices do you recommend for new startups?',
+      'answer': 'Use tools like Google Sheets, QuickBooks, or Wave for budgeting. Track burn rate, set a 3–6 month runway buffer, and monitor cash flow weekly. Include projected vs actual financials.',
     },
     {
       'question': 'What licenses do I need to operate legally?',
@@ -63,7 +63,7 @@ class _FaqState extends State<Faq> {
       'answer': 'Calculate cost, research competitors, and find a price that reflects your value while staying competitive.',
     },
   ],
-  'Growth Strategies': [
+  'Marketing & Growth Strategies': [
     {
       'question': 'How can I scale my business?',
       'answer': 'Automate tasks, expand to new markets, invest in marketing, and build strong partnerships.',
