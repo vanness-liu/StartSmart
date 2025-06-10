@@ -100,7 +100,6 @@ class _ChatbotPageState extends State<ChatbotPage> {
                   padding: const EdgeInsets.symmetric(vertical: 6.0),
                   child: ElevatedButton(
                     onPressed: () => sendMessage(question),
-                    
                     style: ElevatedButton.styleFrom(
                       backgroundColor: userBubbleColor,
                       foregroundColor: textColor,
@@ -118,7 +117,10 @@ class _ChatbotPageState extends State<ChatbotPage> {
                   ),
                 )),
             SizedBox(height: 30),
-            buildInputBar(),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20.0), // 👈 added padding here
+              child: buildInputBar(),
+            ),
           ],
         ),
       ),
@@ -163,17 +165,16 @@ class _ChatbotPageState extends State<ChatbotPage> {
               style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: "Ask anything",
-                hintStyle: TextStyle(color:const Color.fromARGB(255, 255, 255, 255)),
+                hintStyle: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
                 border: InputBorder.none,
               ),
               cursorColor: textColor,
-              onSubmitted: (value) => sendMessage(value),
+              onSubmitted: (value) => sendMessage(value), //press enter
             ),
           ),
           IconButton(
-            icon: Icon(Icons.send, color:const Color.fromARGB(255, 255, 255, 255)),
+            icon: Icon(Icons.send, color: Color.fromARGB(255, 255, 255, 255)),
             onPressed: () => sendMessage(_controller.text),
-            
           )
         ],
       ),
