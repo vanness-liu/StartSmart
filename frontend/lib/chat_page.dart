@@ -13,6 +13,22 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   bool _isHovering = false;
   final TextEditingController _controller = TextEditingController();
+  final List<_ChatMessage> _messages = [];
+
+  void _sendMessage() {
+    final text = _controller.text.trim();
+    if (text.isNotEmpty) {
+      setState(() {
+        _messages.add(_ChatMessage(text: text, isUser: true));
+        // Simulate a bot response
+        _messages.add(_ChatMessage(
+          text: "Thanks for your message! ${widget.mentorName} will respond shortly.",
+          isUser: false,
+        ));
+      });
+      _controller.clear();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +66,8 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                 ),
-                // Added SVG Icon (make sure the asset path is correct)
                 SvgPicture.asset(
-                  'assets/icons/video.svg', // replace with your actual SVG path
+                  'assets/icons/video.svg',
                   width: 20,
                   height: 20,
                   color: Colors.white,
@@ -65,80 +80,117 @@ class _ChatPageState extends State<ChatPage> {
 
           // Chat content
           Expanded(
-            child: ListView(
+            child: ListView.builder(
               padding: const EdgeInsets.all(16),
-              children: [
-                MouseRegion(
-                  onEnter: (_) => setState(() => _isHovering = true),
-                  onExit: (_) => setState(() => _isHovering = false),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: _isHovering
-                          ? [
-                              const BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 10,
-                                offset: Offset(0, 4),
+              itemCount: _messages.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return MouseRegion(
+                    onEnter: (_) => setState(() => _isHovering = true),
+                    onExit: (_) => setState(() => _isHovering = false),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: _isHovering
+                            ? [
+                                const BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 4),
+                                ),
+                              ]
+                            : [
+                                const BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 6,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const CircleAvatar(
+                                radius: 12,
+                                backgroundColor: Color(0xFF4EA46A),
+                                child: Icon(Icons.smart_toy,
+                                    color: Colors.white, size: 14),
                               ),
-                            ]
-                          : [
-                              const BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 6,
-                                offset: Offset(0, 2),
+                              const SizedBox(width: 8),
+                              const Text(
+                                "Mentor Buddies Bot",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Poppins',
+                                  color: Color(0xFF267F60),
+                                ),
+                              ),
+                              const Spacer(),
+                              const Text(
+                                "5:23 pm",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Poppins',
+                                  color: Colors.grey,
+                                ),
                               ),
                             ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const CircleAvatar(
-                              radius: 12,
-                              backgroundColor: Color(0xFF4EA46A),
-                              child: Icon(Icons.smart_toy,
-                                  color: Colors.white, size: 14),
-                            ),
-                            const SizedBox(width: 8),
-                            const Text(
-                              "Mentor Buddies Bot",
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Poppins',
-                                color: Color(0xFF267F60),
-                              ),
-                            ),
-                            const Spacer(),
-                            const Text(
-                              "5:23 pm",
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontFamily: 'Poppins',
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          "Hi there, buddy! We’re connecting you with ${widget.mentorName} now!",
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            height: 1.4,
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 8),
+                          Text(
+                            "Hi there, buddy! We’re connecting you with ${widget.mentorName} now!",
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Poppins',
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-              ],
+                  );
+                } else {
+                  final message = _messages[index - 1];
+                  return Align(
+                    alignment: message.isUser
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      constraints: BoxConstraints(maxWidth: 250),
+                      decoration: BoxDecoration(
+                        color: message.isUser
+                            ? Color(0xFF4EA46A)
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        message.text,
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          color: message.isUser ? Colors.white : Colors.black87,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              },
             ),
           ),
 
@@ -163,15 +215,14 @@ class _ChatPageState extends State<ChatPage> {
                         hintStyle: TextStyle(fontFamily: 'Poppins'),
                         border: InputBorder.none,
                       ),
+                      onSubmitted: (_) => _sendMessage(),
                     ),
                   ),
                 ),
                 const SizedBox(width: 8),
                 IconButton(
                   icon: const Icon(Icons.send, color: Color(0xFF4EA46A)),
-                  onPressed: () {
-                    // Implement send message
-                  },
+                  onPressed: _sendMessage,
                 )
               ],
             ),
@@ -180,4 +231,11 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
+}
+
+class _ChatMessage {
+  final String text;
+  final bool isUser;
+
+  _ChatMessage({required this.text, required this.isUser});
 }
