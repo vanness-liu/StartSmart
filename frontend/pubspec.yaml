@@ -30,6 +30,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  firebase_core: ^2.25.4
+  cloud_firestore: ^4.13.1
+  firebase_auth: ^4.17.4  # optional
   flutter_svg: ^2.0.7
 
 
@@ -60,8 +64,6 @@ flutter:
     - assets/khailee.jpg
     - assets/sivapalan.jpg
     - assets/renyi.jpg
-    - assets/Billy1.jpg
-    - assets/Billy2.jpg
     - assets/icons/Frame.svg
     - assets/icons/startsmart.svg
     - assets/icons/calendar.svg
@@ -69,7 +71,8 @@ flutter:
     - assets/icons/checklist.svg
     - assets/icons/spedometer.svg
     - assets/icons/video.svg
-    
+    - assets/Billy1.jpg
+    - assets/Billy2.jpg
 
   fonts:
     - family: Poppins
