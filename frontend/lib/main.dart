@@ -1,29 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/login.dart';
+import 'package:flutter_application_1/signup.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'mentor_page.dart';
 import 'faq.dart';
 import 'chatbotPage.dart';
 import 'readinessquizPage.dart';
 import 'checkbox_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+//import 'pages/signup_page.dart';
+//import 'pages/login_page.dart';
 
-void main() {
-  runApp(MentorApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MentorApp());
 }
 
+
 class MentorApp extends StatelessWidget {
+  const MentorApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Mentor App',
+      title: 'StartSmart',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Poppins'),
-      home: MainScreen(), // ✅ This points to the stateful widget below
+      initialRoute: '/login',
+      routes: {
+        '/signup': (context) => const SignupPage(),
+        '/login': (context) => const LoginPage(),
+        '/home': (context) => const MainScreen(), 
+      },
     );
   }
 }
 
-// ✅ Add this class to fix the missing part
+// Add this class to fix the missing part
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }

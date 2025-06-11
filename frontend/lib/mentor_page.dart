@@ -35,6 +35,8 @@ class MentorPage extends StatelessWidget {
     },
   ];
 
+  MentorPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -96,7 +98,7 @@ class MentorCard extends StatelessWidget {
   final String description;
   final String imagePath;
 
-  const MentorCard({
+  const MentorCard({super.key, 
     required this.name,
     required this.description,
     required this.imagePath,
