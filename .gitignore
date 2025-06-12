@@ -7,6 +7,9 @@ Thumbs.db
 .vscode/
 *.iml
 *.log
+*.pyc
+*.lock
+__pycache__/
 
 # Python / Backend
 backend/venv/

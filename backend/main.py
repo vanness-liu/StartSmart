@@ -9,7 +9,7 @@ app = FastAPI(title=settings.PROJECT_NAME, version=settings.API_VERSION)
 # CORS Middleware (adjust origins as needed for development/production)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost", "http://localhost:8080"], # Add Flutter dev origins
+    allow_origins=["http://localhost", "http://localhost:8080", "http://localhost:8081"], # Add Flutter dev origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
