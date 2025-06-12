@@ -1,0 +1,66 @@
+# services/nlp.py
+from sentence_transformers import SentenceTransformer, util
+
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+knowledge_base = [
+    "IF no business experience THEN suggest beginner-friendly, low-risk startups.",
+    "IF has business experience THEN offer advanced strategies and funding advice.",
+    "IF business/finance education THEN skip basics, give strategic insights.",
+    "IF no business education THEN explain basic terms and give learning resources.",
+    "IF has technical skills THEN suggest tech/product-based startups.",
+    "IF no technical skills THEN recommend finding co-founder or outsourcing.",
+    "IF limited funds THEN suggest bootstrapping or grant-funded ideas.",
+    "IF good funding THEN suggest scalable or higher-cost startups.",
+    "IF wants side income THEN recommend part-time or low-risk models.",
+    "IF wants full-time business THEN guide on scaling and registration.",
+    "IF in urban area THEN suggest digital or population-based businesses.",
+    "IF in rural area THEN suggest location-based or local service startups.",
+    "IF has full-time job THEN suggest passive or weekend-run businesses.",
+    "IF fully available THEN recommend full-time or intensive startups.",
+    "IF interested in tech THEN suggest app, SaaS, or marketplaces.",
+    "IF interested in food/fashion/crafts THEN suggest F&B, dropshipping, or social commerce",
+    "IF you are unsure about the competence of your product/service, THEN conduct a market analysis focusing on competitors, demand, and customer needs.",
+    "IF you have limited data, THEN use the 'Three-Scope Projection' (TAM, SAM, SOM) to estimate your potential market size.",
+    "IF you lack capital to launch, THEN consider bootstrapping/applying for government grants and competitions.",
+    "IF you have technical skills but lack funding or connections, THEN seek industry partners who can contribute capital, technical support, or licensing help.",
+    "IF your idea is costly or complex, THEN prioritize partnerships with experienced stakeholders and government-linked organizations.",
+    "IF you are not ready to face financial and personal sacrifices, THEN reconsider starting a business until you build resilience and commitment.",
+    "IF you only have one revenue stream, THEN develop multiple streams (e.g., subscriptions, exports) to strengthen investor interest.",
+    "IF you’re going solo, THEN find a trustworthy co-founder to share the workload and risks.",
+    "IF your product is far from being market-ready, THEN test and validate it before seeking investment.",
+    "IF you’re operating alone with low risk, THEN consider a Sole Proprietorship.",
+    "IF you’re starting with a friend or team, THEN use a Partnership for shared risk and collaboration.",
+    "IF you want liability protection without too many formalities, THEN opt for an LLP (Limited Liability Partnership).",
+    "IF you aim to scale and protect personal assets, THEN form a Sendirian Berhad",
+    "IF you’re just starting out with low needs, THEN bootstrap using personal savings or support from friends/family.",
+    "IF your idea is innovative or socially impactful, THEN apply for government grants and enter competitions.",
+    "IF you lack credit or collateral but need moderate funds, THEN approach government-backed development banks.",
+    "IF you have limited budget, THEN avoid paid ads and focus on SEO and organic social media.",
+    "IF you want to increase sales per customer, THEN use upselling, cross-selling, and next-sell techniques.",
+    "IF you sell to consumers, THEN consider a B2C model with strong branding and volume focus.",
+    "IF your clients are other businesses, THEN choose B2B with longer sales cycles and contracts.",
+    "IF you connect buyers and sellers, THEN build a marketplace and focus on trust and platform management.",
+    "IF the economy is unstable or consumers are cautious, THEN delay launching unless your product solves a crisis-specific problem.",
+    "IF there's clear demand and minimal competition, THEN proceed with launching to gain early traction.",
+    "IF you want to stay operational and solvent, THEN track cash flow monthly using spreadsheets or tools like QuickBooks/Xero.",
+    "IF funds are limited, THEN prioritize development and customer validation.",
+    "IF you haven’t validated your product-market fit, THEN consult mentors and conduct market research before building further.",
+    "IF you’re forming a team or picking a legal structure, THEN get professional input to protect your business and relationships.",
+    "IF a business has a unique product or competitive advantage, THEN it can prices its product higher.",
+    "IF the brand is strong, THEN premium pricing can be introduced.",
+    "IF the target market is marginalized communities, THEN pricing should be affordable and government subsidies should be considered.",
+    "IF a startup lacks connections or experience, THEN the expert system should provide mentorship or networking options.",
+    "IF a startup deals with a complex registration process, THEN the system should guide users through it step-by-step.",
+    "IF the product is intellectual property-based, THEN the entrepreneur must apply for copyright or patent.",
+    "IF entrepreneurs encounter problems, THEN the system should offer expert help or direct them to the appropriate government support.",
+    "IF users report business issues in the system, THEN connect them to experts (e.g., legal, technical, or financial)."
+]
+
+kb_embeddings = model.encode(knowledge_base, convert_to_tensor=True)
+
+def find_best_rule(question: str):
+    question_embedding = model.encode(question, convert_to_tensor=True)
+    scores = util.pytorch_cos_sim(question_embedding, kb_embeddings)[0]
+    best_idx = scores.argmax().item()
+    return knowledge_base[best_idx], float(scores[best_idx])

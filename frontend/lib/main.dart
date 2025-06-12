@@ -30,11 +30,11 @@ class MentorApp extends StatelessWidget {
       title: 'StartSmart',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Poppins'),
-      initialRoute: '/login',
+      initialRoute: '/home',
       routes: {
-        '/signup': (context) => const SignupPage(),
-        '/login': (context) => const LoginPage(),
         '/home': (context) => const MainScreen(), 
+        '/signup': (context) => const SignupPage(),
+        '/login': (context) => const LoginPage()
       },
     );
   }
