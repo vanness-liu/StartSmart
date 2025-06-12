@@ -66,64 +66,54 @@ class _ChatbotPageState extends State<ChatbotPage> {
   }
 
   Widget buildLandingView() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 30.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  SizedBox(height: 30),
-                  Text(
-                    "Stuck on your startup journey?",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    "Get instant advice, anytime.",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ],
+    return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 30.0),
+      children: [
+        Center(
+          child: Column(
+            children: [
+              SizedBox(height: 30),
+              Text(
+                "Stuck on your startup journey?",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            SizedBox(height: 30),
-            ...suggestions.map((question) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6.0),
-                  child: ElevatedButton(
-                    onPressed: () => sendMessage(question),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: userBubbleColor,
-                      foregroundColor: textColor,
-                      padding:
-                          EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      textStyle: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    child: Text(question),
-                  ),
-                )),
-            SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0), // 👈 added padding here
-              child: buildInputBar(),
-            ),
-          ],
+              SizedBox(height: 12),
+              Text(
+                "Get instant advice, anytime.",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+        SizedBox(height: 30),
+        ...suggestions.map((question) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              child: ElevatedButton(
+                onPressed: () => sendMessage(question),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: userBubbleColor,
+                  foregroundColor: textColor,
+                  padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  textStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                child: Text(question),
+              ),
+            )),
+        SizedBox(height: 80), // Space above input bar
+      ],
     );
   }
 
@@ -133,56 +123,62 @@ class _ChatbotPageState extends State<ChatbotPage> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: ListView(
+            child: ListView.builder(
               reverse: true,
-              children: messages.reversed
-                  .map((msg) =>
-                      buildBubble(msg['text']!, msg['sender'] == 'user'))
-                  .toList(),
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final msg = messages[messages.length - 1 - index];
+                return buildBubble(msg['text']!, msg['sender'] == 'user');
+              },
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: buildInputBar(),
-        ),
+        SizedBox(height: 80), // Space above input bar
       ],
     );
   }
 
   Widget buildInputBar() {
     return Container(
-      decoration: BoxDecoration(
-        color: backgroundInput,
-        borderRadius: BorderRadius.circular(30),
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: "Ask anything",
-                hintStyle: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-                border: InputBorder.none,
+      color: Colors.white,
+      padding: EdgeInsets.fromLTRB(16, 8, 16, 24),
+      child: Container(
+        decoration: BoxDecoration(
+          color: backgroundInput,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: "Ask anything",
+                  hintStyle:
+                      TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                  border: InputBorder.none,
+                ),
+                cursorColor: textColor,
+                onSubmitted: (value) => sendMessage(value),
               ),
-              cursorColor: textColor,
-              onSubmitted: (value) => sendMessage(value), //press enter
             ),
-          ),
-          IconButton(
-            icon: Icon(Icons.send, color: Color.fromARGB(255, 255, 255, 255)),
-            onPressed: () => sendMessage(_controller.text),
-          )
-        ],
+            IconButton(
+              icon: Icon(Icons.send, color: Colors.white),
+              onPressed: () => sendMessage(_controller.text),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return hasStartedChat ? buildChatView() : buildLandingView();
+    return Scaffold(
+      body: SafeArea(child: hasStartedChat ? buildChatView() : buildLandingView()),
+      bottomNavigationBar: buildInputBar(),
+    );
   }
 }
