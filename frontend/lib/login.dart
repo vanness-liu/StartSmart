@@ -1,3 +1,5 @@
+// login.dart (Revised)
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,48 +24,57 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-   Future<void> _handleLogin() async {
+  Future<void> _handleLogin() async {
+  if (_isLoading) return;
+
+  setState(() {
+    _isLoading = true;
+    _error = null;
+  });
+
+  try {
+    // Step 1: Authenticate with Firebase
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
+
+    // Step 2: ALWAYS navigate to the home screen after successful login
+    if (context.mounted) {
+      Navigator.of(context).pushReplacementNamed('/home');
+    }
+
+  } on FirebaseAuthException catch (e) {
+    // Provide more user-friendly error messages
+    if (e.code == 'user-not-found' || e.code == 'wrong-password' || e.code == 'invalid-credential') {
+      _error = 'Invalid email or password. Please try again.';
+    } else {
+      _error = 'An unexpected error occurred during login.';
+    }
+    setState(() {});
+  } catch (e) {
     setState(() {
-      _isLoading = true;
-      _error = null;
+      _error = 'Login failed. Please check your connection.';
     });
-
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-
-      // Navigate to the home screen
-      Navigator.pushReplacementNamed(context, '/home');
-    } catch (e) {
-      setState(() {
-        _error = 'Login failed: ${e.toString()}';
-      });
-    } finally {
+  } finally {
+    if (mounted) {
       setState(() {
         _isLoading = false;
       });
     }
   }
+}
 
-
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            Container(
-              height: 24,
-              color: const Color(0xFF005C57),
-            ),
+            Container(height: 24, color: const Color(0xFF005C57)),
             const SizedBox(height: 32),
-            SvgPicture.asset(
-              'assets/icons/startsmart.svg',
-              height: 80,
-            ),
+            SvgPicture.asset('assets/icons/startsmart.svg', height: 80),
             const SizedBox(height: 32),
             const Text(
               'Log in your account',
@@ -116,24 +127,32 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       onPressed: _isLoading ? null : _handleLogin,
-                      child: const Text(
-                        'LOGIN',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1,
-                        ),
-                      ),
+                      child:
+                          _isLoading
+                              ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                              : const Text(
+                                'LOGIN',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1,
+                                ),
+                              ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  if (_isLoading) const CircularProgressIndicator(),
                   if (_error != null)
                     Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
+                      padding: const EdgeInsets.only(top: 16.0),
                       child: Text(
                         _error!,
-                        style: const TextStyle(color: Colors.red),
+                        style: const TextStyle(color: Colors.red, fontSize: 14),
                         textAlign: TextAlign.center,
                       ),
                     ),

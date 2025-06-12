@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/login.dart';
 import 'package:flutter_application_1/signup.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'mentor_page.dart';
 import 'faq.dart';
 import 'chatbotPage.dart';
-import 'readinessquizPage.dart';
 import 'checkbox_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'providers/quiz_provider.dart';
+import 'quiz_launcher_page.dart';
 //import 'pages/signup_page.dart';
 //import 'pages/login_page.dart';
 
@@ -17,9 +19,13 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MentorApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => QuizProvider(),
+      child: const MentorApp(),
+    ),
+  );
 }
-
 
 class MentorApp extends StatelessWidget {
   const MentorApp({super.key});
@@ -40,7 +46,6 @@ class MentorApp extends StatelessWidget {
   }
 }
 
-// Add this class to fix the missing part
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -60,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> pages = [
     CheckboxPage(),
-    ReadinessquizPage(),
+    const QuizLauncherPage(),
     ChatbotPage(),
     MentorPage(),
   ];
@@ -76,8 +81,6 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: Column(
         children: [
-          // Top Bar with dynamic title
-          // In your _MainScreenState class, modify the top bar widget:
           Container(
             padding: EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 20),
             width: double.infinity,

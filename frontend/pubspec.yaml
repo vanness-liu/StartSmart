@@ -31,9 +31,14 @@ dependencies:
   flutter:
     sdk: flutter
 
-  firebase_core: ^2.25.4
-  cloud_firestore: ^4.13.1
-  firebase_auth: ^4.17.4  # optional
+  http: ^1.1.0
+  shared_preferences: ^2.2.2  
+  percent_indicator: ^4.2.3
+  provider: ^6.1.1
+
+  firebase_core: ^3.14.0
+  cloud_firestore: ^5.6.9
+  firebase_auth: ^5.6.0  # optional
   flutter_svg: ^2.0.7
 
 
@@ -73,6 +78,7 @@ flutter:
     - assets/icons/video.svg
     - assets/Billy1.jpg
     - assets/Billy2.jpg
+    - assets/rocket.png
 
   fonts:
     - family: Poppins
