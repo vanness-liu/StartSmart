@@ -43,6 +43,7 @@ def chat_with_bot(payload: ChatRequest):
         raw_answer = rule.split("THEN")[1].strip()
         prompt = (
             f"Rewrite the following expert advice into a short and precise, and helpful sentence for a person who want to do a startup business:\n"
+            f"Question: \"{payload.question}\"\n\n"
             f"Advice: \"{raw_answer}\"\n\n"
             f"User Profile:\n{user_context}\n\n"
             "Please dont mention the user profile in the answer, just use it to personalize the answer."
