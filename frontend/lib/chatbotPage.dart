@@ -40,7 +40,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
     String funding = "Seed";
 
     try {
-      final botReply = await ChatApiService.sendMessage(
+      final botReply = await ChatApiService().sendMessage(
         question: text,
         industry: industry,
         experience: experience,
@@ -52,6 +52,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
         messages.add({'sender': 'bot', 'text': botReply});
       });
     } catch (e) {
+      print(e);
       setState(() {
         messages.add({'sender': 'bot', 'text': 'Sorry, failed to connect to the server.'});
       });

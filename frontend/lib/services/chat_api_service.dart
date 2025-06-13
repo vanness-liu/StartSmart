@@ -1,10 +1,30 @@
 import 'dart:convert';
+import 'dart:io' show Platform; 
 import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart' show kIsWeb; 
 
 class ChatApiService {
-  static const String _baseUrl = "http://10.0.2.2:8000/api/chat"; // Change if needed
+  String get _baseUrl {
+    if (kIsWeb) {
+      // Running on the web
+      return "http://localhost:8000/api/chat";
+    }
+    
+    // Check if running on Android
+    if (Platform.isAndroid) {
+      return "http://10.0.2.2:8000/api/chat";
+    } 
+    // Check if running on iOS
+    else if (Platform.isIOS) {
+       return "http://localhost:8000/api/chat"; 
+    }
+    else {
+      // Fallback for other platforms like desktop
+      return "http://localhost:8000/api/chat";
+    }
+  }
 
-  static Future<String> sendMessage({
+  Future<String> sendMessage({
     required String question,
     required String industry,
     required String experience,

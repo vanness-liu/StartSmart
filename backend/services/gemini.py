@@ -1,16 +1,18 @@
-from google import genai
+import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 
 load_dotenv()  # Load .env file
 
 # Initialize client (from .env)
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))  
+client = genai.configure(api_key=os.getenv("GEMINI_API_KEY"))  
 
 
 def call_gemini(question: str) -> str:
-    response = client.models.generate_content(
-        model="gemini-2.0-flash", 
-        contents=question
-    )
-    return response.text
+    try:
+        model = genai.GenerativeModel("gemini-2.0-flash")
+        response = model.generate_content(question)
+        return response.text
+    except Exception as e:
+        print(f"Gemini error: {e}")
+        return "Error: Could not get response from Gemini."
