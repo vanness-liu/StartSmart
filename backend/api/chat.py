@@ -27,10 +27,10 @@ def chat_with_bot(payload: ChatRequest):
 
     user_context = build_user_context(payload)
 
-    if score < 0.6:
+    if score < 0.5:
         # Fallback to Gemini with personalization
         prompt = (
-            f"Write a expert advice into a short and precise, and helpful sentence for a startup beginner:\n"
+            f"Write a expert advice into a short and precise, and helpful sentence for a person who want to do a startup business:\n"
             f"Question: \"{payload.question}\"\n\n"
             f"User Profile:\n{user_context}\n\n"
             "Please dont mention the user profile in the answer, just use it to personalize the answer."
@@ -42,7 +42,7 @@ def chat_with_bot(payload: ChatRequest):
         # Rule matched: use Gemini to rewrite and personalize
         raw_answer = rule.split("THEN")[1].strip()
         prompt = (
-            f"Rewrite the following expert advice into a short and precise, and helpful sentence for a startup beginner:\n"
+            f"Rewrite the following expert advice into a short and precise, and helpful sentence for a person who want to do a startup business:\n"
             f"Advice: \"{raw_answer}\"\n\n"
             f"User Profile:\n{user_context}\n\n"
             "Please dont mention the user profile in the answer, just use it to personalize the answer."

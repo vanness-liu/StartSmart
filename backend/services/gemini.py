@@ -10,7 +10,7 @@ client = genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 def call_gemini(question: str) -> str:
     try:
-        model = genai.GenerativeModel("gemini-2.0-flash")
+        model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(question)
         return response.text
     except Exception as e:
