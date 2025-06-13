@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'services/chat_api_service.dart';
 
 class ChatbotPage extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
     "What should be in a simple business plan?",
   ];
 
-  void sendMessage(String text) {
+  void sendMessage(String text) async {
     if (text.trim().isEmpty) return;
 
     setState(() {
@@ -30,16 +31,31 @@ class _ChatbotPageState extends State<ChatbotPage> {
       _controller.clear();
     });
 
-    // Simulated chatbot response
-    Future.delayed(Duration(milliseconds: 400), () {
+    //@minzi
+    // Replace these with actual values from your UI or user profile
+    String industry = "Tech";
+    String experience = "Beginner";
+    String phase = "Ideation";
+    String launchTime = "2025";
+    String funding = "Seed";
+
+    try {
+      final botReply = await ChatApiService.sendMessage(
+        question: text,
+        industry: industry,
+        experience: experience,
+        phase: phase,
+        launchTime: launchTime,
+        funding: funding,
+      );
       setState(() {
-        messages.add({
-          'sender': 'bot',
-          'text':
-              'Great idea! You can start by asking your target audience questions or building a landing page to test interest.'
-        });
+        messages.add({'sender': 'bot', 'text': botReply});
       });
-    });
+    } catch (e) {
+      setState(() {
+        messages.add({'sender': 'bot', 'text': 'Sorry, failed to connect to the server.'});
+      });
+    }
   }
 
   Widget buildBubble(String text, bool isUser) {
