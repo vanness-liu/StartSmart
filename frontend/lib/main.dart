@@ -6,11 +6,8 @@ import 'mentor_page.dart';
 import 'faq.dart';
 import 'chatbotPage.dart';
 import 'readinessquizPage.dart';
-import 'checkbox_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-//import 'pages/signup_page.dart';
-//import 'pages/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,14 +49,12 @@ class _MainScreenState extends State<MainScreen> {
   int selectedIndex = 0;
 
   final List<String> titles = [
-    "CheckBox",
     "Readiness Quiz",
     "StartSmart Advisor",
     "Explore Mentor",
   ];
 
   final List<Widget> pages = [
-    CheckboxPage(),
     ReadinessquizPage(),
     ChatbotPage(),
     MentorPage(),
@@ -154,14 +149,6 @@ class _MainScreenState extends State<MainScreen> {
           showSelectedLabels: false,
           showUnselectedLabels: false,
           items: [
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(
-                'assets/icons/checklist.svg',
-                color:
-                    selectedIndex == 0 ? Color(0xFF005C57) : Color(0xFF4EA46A),
-              ),
-              label: '',
-            ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
                 'assets/icons/spedometer.svg',

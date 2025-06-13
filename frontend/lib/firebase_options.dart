@@ -18,25 +18,10 @@ class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       return web;
-    }
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        return android;
-      case TargetPlatform.iOS:
-        return ios;
-      case TargetPlatform.macOS:
-        return macos;
-      case TargetPlatform.windows:
-        return windows;
-      case TargetPlatform.linux:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-      default:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions are not supported for this platform.',
-        );
+    } else {
+      throw UnsupportedError(
+        'DefaultFirebaseOptions are only supported on the web platform.',
+      );
     }
   }
 
@@ -50,39 +35,5 @@ class DefaultFirebaseOptions {
     measurementId: 'G-ZL0CFTGNDV',
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyANQWhRvw7wnVGe3OEIKwV3OyrJREm8jiI',
-    appId: '1:544885880175:android:429f51e1fbc6f03313e49a',
-    messagingSenderId: '544885880175',
-    projectId: 'startsmart-650d6',
-    storageBucket: 'startsmart-650d6.firebasestorage.app',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBk5b23qGQMKUvXUZG5DPs0Qe4w2-NEL6o',
-    appId: '1:544885880175:ios:77b15844ff68194913e49a',
-    messagingSenderId: '544885880175',
-    projectId: 'startsmart-650d6',
-    storageBucket: 'startsmart-650d6.firebasestorage.app',
-    iosBundleId: 'com.example.frontend',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBk5b23qGQMKUvXUZG5DPs0Qe4w2-NEL6o',
-    appId: '1:544885880175:ios:77b15844ff68194913e49a',
-    messagingSenderId: '544885880175',
-    projectId: 'startsmart-650d6',
-    storageBucket: 'startsmart-650d6.firebasestorage.app',
-    iosBundleId: 'com.example.frontend',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCn38pZQZS-TfkD5Kh139lgwkZ_ialHML0',
-    appId: '1:544885880175:web:9b214657588dc93b13e49a',
-    messagingSenderId: '544885880175',
-    projectId: 'startsmart-650d6',
-    authDomain: 'startsmart-650d6.firebaseapp.com',
-    storageBucket: 'startsmart-650d6.firebasestorage.app',
-    measurementId: 'G-N3VVQWQF80',
-  );
+ 
 }

@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
+import 'checkbox_page.dart'; // import your CheckboxPage here
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,7 +26,18 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-   Future<void> _handleLogin() async {
+  Future<bool> hasCompletedQuestionnaire(String uid) async {
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('questionnaire')
+        .doc('startupProfile')
+        .get();
+
+    return doc.exists;
+  }
+
+  Future<void> _handleLogin() async {
     setState(() {
       _isLoading = true;
       _error = null;
@@ -34,9 +49,23 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text.trim(),
       );
 
-      // Navigate to the home screen
-      Navigator.pushReplacementNamed(context, '/home');
-    } catch (e) {
+      // After successful login
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+      final userData = userDoc.data();
+      final hasCompleted = userData != null && userData['questionnaireCompleted'] == true;
+
+      if (hasCompleted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const CheckboxPage()),
+        );
+      }
+
+     } catch (e) {
       setState(() {
         _error = 'Login failed: ${e.toString()}';
       });
@@ -46,6 +75,7 @@ class _LoginPageState extends State<LoginPage> {
       });
     }
   }
+
 
 
  @override
