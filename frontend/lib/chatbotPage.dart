@@ -52,7 +52,6 @@ class _ChatbotPageState extends State<ChatbotPage> {
         messages.add({'sender': 'bot', 'text': botReply});
       });
     } catch (e) {
-      print(e);
       setState(() {
         messages.add({'sender': 'bot', 'text': 'Sorry, failed to connect to the server.'});
       });
