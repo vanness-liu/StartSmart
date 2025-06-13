@@ -83,7 +83,7 @@ Ensure you have the following installed on your system:
             ```bash
             cp .env.example .env
             ```
-        *   Open `backend/.env` and fill in your actual API keys (e.g., `GEMINI_API_KEY`).
+        *   Open `backend/.env` and fill in your actual API keys ( `GEMINI_API_KEY`).
     *   Set up Firebase:
         *   Download your `firebase_credentials.json` file from your Firebase project settings (Project settings > Service accounts > Generate new private key).
         *   Place the `firebase_credentials.json` file directly into the `backend/` directory.
