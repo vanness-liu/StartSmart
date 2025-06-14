@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'services/chat_api_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatbotPage extends StatefulWidget {
   @override
@@ -11,6 +13,19 @@ class _ChatbotPageState extends State<ChatbotPage> {
   final TextEditingController _controller = TextEditingController();
   bool hasStartedChat = false;
 
+  String? industry;
+  String? experience;
+  String? phase;
+  String? launchTime;
+  String? funding;
+  bool isLoading = true; // To track when data is being fetched
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserProfileData(); 
+  }
+  
   final Color userBubbleColor = Color(0xFFCFF5D4);
   final Color botBubbleColor = Color(0xFF005C57);
   final Color textColor = Color(0xFF4EA46A);
@@ -33,20 +48,20 @@ class _ChatbotPageState extends State<ChatbotPage> {
 
     //@minzi
     // Replace these with actual values from your UI or user profile
-    String industry = "Tech";
-    String experience = "Beginner";
-    String phase = "Ideation";
-    String launchTime = "2025";
-    String funding = "Seed";
+      String userIndustry = industry ?? "Unknown";
+      String userExperience = experience ?? "Unknown";
+      String userPhase = phase ?? "Unknown";
+      String userLaunchTime = launchTime ?? "Unknown";
+      String userFunding = funding ?? "Unknown";
 
     try {
       final botReply = await ChatApiService().sendMessage(
         question: text,
-        industry: industry,
-        experience: experience,
-        phase: phase,
-        launchTime: launchTime,
-        funding: funding,
+        industry: userIndustry,
+        experience: userExperience,
+        phase: userPhase,
+        launchTime: userLaunchTime,
+        funding: userFunding,
       );
       setState(() {
         messages.add({'sender': 'bot', 'text': botReply});
@@ -54,9 +69,30 @@ class _ChatbotPageState extends State<ChatbotPage> {
     } catch (e) {
       setState(() {
         messages.add({'sender': 'bot', 'text': 'Sorry, failed to connect to the server.'});
+        print(e);
       });
     }
   }
+
+  Future<void> fetchUserProfileData() async {
+  final uid = FirebaseAuth.instance.currentUser?.uid;
+  if (uid == null) return;
+
+  final userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+  if (userDoc.exists) {
+    final data = userDoc.data();
+    setState(() {
+      industry = data?['industry'] ?? 'Unknown';
+      experience = data?['experience'] ?? 'Unknown';
+      phase = data?['stage'] ?? 'Unknown';
+      launchTime = data?['planning'] ?? 'Unknown';
+      funding = data?['funding'] ?? 'Unknown';
+      isLoading = false;
+    });
+  }
+}
+
 
   Widget buildBubble(String text, bool isUser) {
     return Align(
