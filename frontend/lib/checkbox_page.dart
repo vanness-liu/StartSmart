@@ -83,12 +83,13 @@ class _CheckboxPageState extends State<CheckboxPage> {
       'planning': planning[selectedPlanning ?? 0],
       'funding': funding[selectedFunding ?? 0],
       'completedAt': Timestamp.now(),
+      'questionnaireCompleted': true,
     };
 
     await FirebaseFirestore.instance
       .collection('users')
       .doc(uid)
-      .set({'questionnaireCompleted': true}, SetOptions(merge: true));
+      .set(data, SetOptions(merge: true)); 
   }
 
 
@@ -454,14 +455,8 @@ class _CheckboxPageState extends State<CheckboxPage> {
               ),
               onPressed: selectedFunding!= null
                   ? () async {
-                    final uid = FirebaseAuth.instance.currentUser?.uid;
-                    if (uid != null) {
-                      await FirebaseFirestore.instance.collection('users').doc(uid).set(
-                        {'questionnaireCompleted': true},
-                        SetOptions(merge: true),
-                      );
-                    }
-                    Navigator.pushReplacementNamed(context, '/home'); // Or whatever your main screen route is
+                    await _saveCheckboxDataToFirestore(); // Save answers + questionnaireCompleted
+                    Navigator.pushReplacementNamed(context, '/home');
                   }
                 : null,
               child: const Text(
