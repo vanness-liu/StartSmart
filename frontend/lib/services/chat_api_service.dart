@@ -7,7 +7,7 @@ class ChatApiService {
   String get _baseUrl {
     if (kIsWeb) {
       // Running on the web
-      return "http://localhost:8000/api/chat";
+      return "http://127.0.0.1:8000/api/chat";   //"http://localhost:8000/api/chat"
     }
     
     // Check if running on Android

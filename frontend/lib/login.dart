@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'checkbox_page.dart'; 
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,8 +24,19 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+// Future<bool> hasCompletedQuestionnaire(String uid) async {
+//     final doc = await FirebaseFirestore.instance
+//         .collection('users')
+//         .doc(uid)
+//         .collection('questionnaire')
+//         .doc('startupProfile')
+//         .get();
+
+//     return doc.exists;
+//   }
+
   Future<void> _handleLogin() async {
-    if (_isLoading) return;
+    //if (_isLoading) return;
 
     setState(() {
       _isLoading = true;
@@ -36,11 +49,24 @@ class _LoginPageState extends State<LoginPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+      // After successful login
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final userData = userDoc.data();
+      final hasCompleted = userData != null && userData['questionnaireCompleted'] == true;
 
-      // Step 2: ALWAYS navigate to the home screen after successful login
-      if (context.mounted) {
-        Navigator.of(context).pushReplacementNamed('/home');
+      if (hasCompleted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const CheckboxPage()),
+        );
       }
+      // // Step 2: ALWAYS navigate to the home screen after successful login
+      // if (context.mounted) {
+      //   Navigator.of(context).pushReplacementNamed('/home');
+      // }
     } on FirebaseAuthException catch (e) {
       // Provide more user-friendly error messages
       if (e.code == 'user-not-found' ||
