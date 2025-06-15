@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'mentor_page.dart';
 import 'faq.dart';
 import 'chatbotPage.dart';
-import 'checkbox_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'providers/quiz_provider.dart';
