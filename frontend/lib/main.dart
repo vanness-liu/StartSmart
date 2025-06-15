@@ -174,7 +174,7 @@ class _MainScreenState extends State<MainScreen> {
               icon: SvgPicture.asset(
                 'assets/icons/chat.svg',
                 color:
-                    selectedIndex == 2 ? Color(0xFF005C57) : Color(0xFF4EA46A),
+                    selectedIndex == 1 ? Color(0xFF005C57) : Color(0xFF4EA46A),
               ),
               label: '',
             ),
@@ -182,7 +182,7 @@ class _MainScreenState extends State<MainScreen> {
               icon: SvgPicture.asset(
                 'assets/icons/calendar.svg',
                 color:
-                    selectedIndex == 3 ? Color(0xFF005C57) : Color(0xFF4EA46A),
+                    selectedIndex == 2 ? Color(0xFF005C57) : Color(0xFF4EA46A),
               ),
               label: '',
             ),
