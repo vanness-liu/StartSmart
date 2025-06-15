@@ -166,7 +166,7 @@ class _MainScreenState extends State<MainScreen> {
               icon: SvgPicture.asset(
                 'assets/icons/spedometer.svg',
                 color:
-                    selectedIndex == 1 ? Color(0xFF005C57) : Color(0xFF4EA46A),
+                    selectedIndex == 0 ?Color(0xFF005C57) : Color(0xFF4EA46A),
               ),
               label: '',
             ),
