@@ -67,10 +67,10 @@ startsmart/
 ## 🛠️ Technologies Used
 
 - **Backend**: Python, FastAPI
-- **Frontend**: HTML/CSS (templated with Jinja2)
+- **Frontend**: Flutter (Dart)
+- **AI Services**: Google Gemini API
 - **Embeddings**: [`BAAI/bge-small-en-v1.5`](https://huggingface.co/BAAI/bge-small-en-v1.5)
-- **Vector Store**: FAISS
-- **Frameworks**: LangChain (for retrieval), Scikit-learn (quiz logic), SQLite
+- **Storage**: Firebase Console
 
 ---
 
@@ -106,14 +106,14 @@ Pre-requisites: Ensure that you have Flutter downloaded!
    pip install -r requirements.txt
 4. Run the app simultaneously:
 
-    Frontend:
-    ```bash
-    cd frontend
-    flutter pub get
-    flutter run
-    ```
+   - Frontend:
+  ```bash
+  cd frontend
+  flutter pub get
+  flutter run
+  ```
 
-  Backend:
+   - Backend:
    ```bash
    cd backend
    python3 -m venv venv
