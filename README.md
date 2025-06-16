@@ -105,19 +105,22 @@ Pre-requisites: Ensure that you have Flutter downloaded!
    cd backend
    pip install -r requirements.txt
 4. Run the app simultaneously:
-   Frontend:
-   ```bash
-   cd frontend
-   flutter pub get
-   flutter run
 
-   Backend:
+    Frontend:
+    ```bash
+    cd frontend
+    flutter pub get
+    flutter run
+    ```
+
+  Backend:
    ```bash
    cd backend
    python3 -m venv venv
    source venv/bin/activate   # macOS/Linux
    # venv\Scripts\activate    # On Windows
    uvicorn main:app --reload
+   ```
 
 ## 🤝 Contributors
 
