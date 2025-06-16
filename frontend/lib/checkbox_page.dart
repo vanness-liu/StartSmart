@@ -137,11 +137,9 @@ class _CheckboxPageState extends State<CheckboxPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // --- FIX: Use Column for overall page structure ---
       body: SafeArea(
         child: Column(
           children: [
-            // --- CONTAINER 1: Top Header with Progress ---
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
               child: Column(
@@ -166,7 +164,6 @@ class _CheckboxPageState extends State<CheckboxPage> {
               ),
             ),
             
-            // --- CONTAINER 2: PageView for Questions (takes up all remaining space) ---
             Expanded(
               child: PageView(
                 controller: _pageController,
@@ -211,7 +208,6 @@ class _CheckboxPageState extends State<CheckboxPage> {
               ),
             ),
 
-            // --- CONTAINER 3: Bottom Footer with Navigation Buttons ---
             _buildFooter(),
           ],
         ),
@@ -279,7 +275,6 @@ class _CheckboxPageState extends State<CheckboxPage> {
     );
   }
 
-  // --- FIX: A dedicated widget for the footer ---
   Widget _buildFooter() {
     bool isLastStep = _currentStep == _totalSteps - 1;
     bool isCompleted = _isStepCompleted();
