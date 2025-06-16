@@ -27,7 +27,7 @@ def chat_with_bot(payload: ChatRequest):
 
     user_context = build_user_context(payload)
 
-    if score < 0.5:
+    if score < 0.45:
         # Fallback to Gemini with personalization
         prompt = (
             f"Write a expert advice into a short and precise, and helpful sentence for a person who want to do a startup business:\n"
