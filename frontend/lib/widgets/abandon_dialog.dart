@@ -60,7 +60,7 @@ class AbandonDialog extends StatelessWidget {
             child: ElevatedButton(
               onPressed: onContinue,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4CAF50), // Main green color
+                backgroundColor: const Color.fromARGB(255, 49, 170, 97), // Main green color
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),

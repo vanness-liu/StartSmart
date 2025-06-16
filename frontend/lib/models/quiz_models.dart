@@ -33,6 +33,16 @@ class QuizResult {
     required this.areasToImprove,
   });
 
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'score': score,
+      // The keys here MUST match the keys used in fromJson
+      'done_well': doneWell, 
+      'areas_to_improve': areasToImprove,
+    };
+  }
+
   factory QuizResult.fromJson(Map<String, dynamic> json) {
     // Safely parse the 'doneWell' list. If it's null, default to an empty list.
     final doneWellList = json['done_well'] != null

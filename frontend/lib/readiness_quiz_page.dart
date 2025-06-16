@@ -10,15 +10,18 @@ class ReadinessQuizPage extends StatelessWidget {
   
   // Helper function to show the custom dialog
   Future<bool> _showAbandonDialog(BuildContext context) async {
+    final quizProvider = context.read<QuizProvider>(); 
+    
     final shouldPop = await showDialog<bool>(
       context: context,
-      barrierDismissible: false, // User must choose an action
+      barrierDismissible: false, 
       builder: (BuildContext dialogContext) {
         return AbandonDialog(
           onContinue: () {
             Navigator.of(dialogContext).pop(false);
           },
           onLeave: () {
+            quizProvider.resetQuiz(); 
             Navigator.of(dialogContext).pop(true);
           },
         );
@@ -44,21 +47,26 @@ class ReadinessQuizPage extends StatelessWidget {
     return WillPopScope(
       onWillPop: () => _showAbandonDialog(context),
       child: Scaffold(
-        backgroundColor: Colors.white, // Set a clean white background
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text("Readiness Quiz"),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () async {
+              if (await _showAbandonDialog(context)) {
+                Navigator.of(context).pop();
+              }
+            },
+          ),
           backgroundColor: Colors.white,
           elevation: 0,
-          iconTheme: const IconThemeData(color: Colors.black),
           titleTextStyle: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 24),
+              const Spacer(),
 
               CircularPercentIndicator(
                 radius: 40.0,
@@ -76,7 +84,6 @@ class ReadinessQuizPage extends StatelessWidget {
                 backgroundColor: Colors.grey.shade200,
                 circularStrokeCap: CircularStrokeCap.round,
               ),
-
               const SizedBox(height: 48),
 
               Text(
@@ -89,31 +96,34 @@ class ReadinessQuizPage extends StatelessWidget {
                   color: Colors.black,
                 ),
               ),
-
               const SizedBox(height: 48),
 
               ...currentQuestion.options.map((option) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  // Replace ElevatedButton with our new custom widget
-                  child: QuizAnswerButton(
-                    text: option,
-                    onPressed: () {
-                      context.read<QuizProvider>().answerQuestion(
-                            option,
-                            (result) {
-                              Navigator.of(context).pop();
-                            },
-                            (error) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(error)),
-                              );
-                            },
-                          );
-                    },
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: QuizAnswerButton(
+                      text: option,
+                      onPressed: () {
+                        context.read<QuizProvider>().answerQuestion(
+                              option,
+                              (result) {
+                                Navigator.of(context).pop(); 
+                              },
+                              (error) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(error)),
+                                );
+                              },
+                            );
+                      },
+                    ),
                   ),
                 );
               }).toList(),
+              
+              const Spacer(flex: 2), 
             ],
           ),
         ),
