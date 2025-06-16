@@ -1,5 +1,6 @@
 // frontend/lib/quiz_launcher_page.dart
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'models/quiz_models.dart';
@@ -19,12 +20,21 @@ class _QuizLauncherPageState extends State<QuizLauncherPage> {
   @override
   void initState() {
     super.initState();
-    _lastResultFuture = _getLastResult();
+    _lastResultFuture = _getLastResultForCurrentUser();
   }
 
-  Future<QuizResult?> _getLastResult() async {
+  String _getUserSpecificKey() {
+    final user = FirebaseAuth.instance.currentUser;
+    // If user is not logged in, use a generic key.
+    // If logged in, create a unique key like 'lastQuizResult_userUID123'.
+    return user != null ? 'lastQuizResult_${user.uid}' : 'lastQuizResult_guest';
+  }
+
+  Future<QuizResult?> _getLastResultForCurrentUser() async {
     final prefs = await SharedPreferences.getInstance();
-    final resultString = prefs.getString('lastQuizResult');
+    final userKey = _getUserSpecificKey(); // Get the unique key
+    final resultString = prefs.getString(userKey); // Read from that key
+
     if (resultString != null) {
       return QuizResult.fromJson(json.decode(resultString));
     }
@@ -33,28 +43,31 @@ class _QuizLauncherPageState extends State<QuizLauncherPage> {
 
   void refreshLauncher() {
     setState(() {
-      _lastResultFuture = _getLastResult();
+      _lastResultFuture = _getLastResultForCurrentUser();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<QuizResult?>(
-      future: _lastResultFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    return Container(
+      color: Colors.white, // This sets the background for the entire page content
+      child: FutureBuilder<QuizResult?>(
+        future: _lastResultFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-        if (snapshot.hasData && snapshot.data != null) {
-          return QuizResultsContent(
-            result: snapshot.data!,
-            onReattempt: refreshLauncher,
-          );
-        } else {
-          return buildStartQuizPage(context);
-        }
-      },
+          if (snapshot.hasData && snapshot.data != null) {
+            return QuizResultsContent(
+              result: snapshot.data!,
+              onReattempt: refreshLauncher,
+            );
+          } else {
+            return buildStartQuizPage(context);
+          }
+        },
+      ),
     );
   }
 

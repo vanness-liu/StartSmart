@@ -146,9 +146,8 @@ class _FaqState extends State<Faq> {
               children: [
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: const Icon(Icons.arrow_back, color: Colors.white),
+                  child: const Icon(Icons.arrow_back, color: Colors.white, size: 28),
                 ),
-                const SizedBox(width: 12),
                 const Expanded(
                   child: Center(
                     child: Text(
@@ -162,6 +161,7 @@ class _FaqState extends State<Faq> {
                     ),
                   ),
                 ),
+                const SizedBox(width: 28), 
               ],
             ),
           ),

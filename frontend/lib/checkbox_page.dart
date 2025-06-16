@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class CheckboxPage extends StatefulWidget {
   const CheckboxPage({super.key});
@@ -10,7 +11,8 @@ class CheckboxPage extends StatefulWidget {
 }
 
 class _CheckboxPageState extends State<CheckboxPage> {
-  int _step = 0;
+  final PageController _pageController = PageController();
+  int _currentStep = 0;
 
 
   // Page 1: industry-Single selection
@@ -30,7 +32,7 @@ class _CheckboxPageState extends State<CheckboxPage> {
   int? selectedIndustry;
 
   //Page 2: experience-single selection
-  final List<String> experience = [
+  final List<String> experiences = [
     "New to startups/First-time founder",
     "Some experience (e.g., worked at a startup, managed a small team)",
     "Experienced entrepreneur/serial founder",
@@ -39,7 +41,7 @@ class _CheckboxPageState extends State<CheckboxPage> {
   int? selectedExperience;
 
   //Page 3: stage-single selection
-  final List<String> stage = [
+  final List<String> stages = [
     "Just an idea/Concept phase",
     "Early-stage development (e.g., building MVP, market research)",
     "Launched/Operational (e.g., have customers, generating revenue)",
@@ -69,6 +71,15 @@ class _CheckboxPageState extends State<CheckboxPage> {
   ];
   int? selectedFunding;
 
+  // Total number of steps for the progress indicator
+  final int _totalSteps = 5;
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   //upload data to firestore
   Future<void> _saveCheckboxDataToFirestore() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -78,8 +89,8 @@ class _CheckboxPageState extends State<CheckboxPage> {
 
     final data = {
       'industry': industries[selectedIndustry ?? 0],
-      'experience': experience[selectedExperience ?? 0],
-      'stage': stage[selectedStage ?? 0],
+      'experience': experiences[selectedExperience ?? 0],
+      'stage': stages[selectedStage ?? 0],
       'planning': planning[selectedPlanning ?? 0],
       'funding': funding[selectedFunding ?? 0],
       'completedAt': Timestamp.now(),
@@ -92,379 +103,224 @@ class _CheckboxPageState extends State<CheckboxPage> {
       .set(data, SetOptions(merge: true)); 
   }
 
+  void _nextPage() {
+    if (_currentStep < _totalSteps - 1) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _previousPage() {
+    if (_currentStep > 0) {
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  // Helper to check if the current step is completed
+  bool _isStepCompleted() {
+    switch (_currentStep) {
+      case 0: return selectedIndustry != null;
+      case 1: return selectedExperience != null;
+      case 2: return selectedStage != null;
+      case 3: return selectedPlanning != null;
+      case 4: return selectedFunding != null;
+      default: return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-          child: _getStepWidget(),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              child: Column(
+                children: [
+                  LinearPercentIndicator(
+                    percent: (_currentStep + 1) / _totalSteps,
+                    lineHeight: 8.0,
+                    backgroundColor: Colors.grey.shade200,
+                    progressColor: const Color(0xFF005C57),
+                    barRadius: const Radius.circular(4),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Step ${_currentStep + 1} of $_totalSteps",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(), // Disable swiping
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentStep = index;
+                  });
+                },
+                children: [
+                  _buildQuestionPage(
+                    question: "Which industry best describes your startup or business idea?",
+                    options: industries,
+                    selectedValue: selectedIndustry,
+                    onChanged: (value) => setState(() => selectedIndustry = value),
+                  ),
+                  _buildQuestionPage(
+                    question: "What is your level of experience in the startup or business world?",
+                    options: experiences,
+                    selectedValue: selectedExperience,
+                    onChanged: (value) => setState(() => selectedExperience = value),
+                  ),
+                  _buildQuestionPage(
+                    question: "What best describes the current stage of your startup or business idea?",
+                    options: stages,
+                    selectedValue: selectedStage,
+                    onChanged: (value) => setState(() => selectedStage = value),
+                  ),
+                  _buildQuestionPage(
+                    question: "When are you planning to launch or significantly scale your business?",
+                    options: planning,
+                    selectedValue: selectedPlanning,
+                    onChanged: (value) => setState(() => selectedPlanning = value),
+                  ),
+                  _buildQuestionPage(
+                    question: "What is your estimated funding requirement or target?",
+                    options: funding,
+                    selectedValue: selectedFunding,
+                    onChanged: (value) => setState(() => selectedFunding = value),
+                  ),
+                ],
+              ),
+            ),
+
+            _buildFooter(),
+          ],
         ),
       ),
     );
   }
+  
 
-  Widget _getStepWidget() {
-  switch (_step) {
-    case 0:
-      return _buildIndustryStep();
-    case 1:
-      return _buildExperienceStep();
-    case 2:
-      return _buildStageStep();
-    case 3:
-      return _buildPlanningStep();
-    case 4:
-      return _buildFundingStep();
-    default:
-      return _buildIndustryStep(); // fallback
-  }
-}
-
-  Widget _buildIndustryStep() {
+  Widget _buildQuestionPage({
+    required String question,
+    required List<String> options,
+    required int? selectedValue,
+    required ValueChanged<int?> onChanged,
+  }) {
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Which industry best describes your startup or business idea?",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          Text(
+            question,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22, height: 1.2),
           ),
-          const SizedBox(height: 18),
-          ...List.generate(industries.length, (i) {
+          const SizedBox(height: 24),
+          ...List.generate(options.length, (i) {
             return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: InkWell(
-                onTap: () => setState(() => selectedIndustry = i),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: selectedIndustry == i ? Color(0xFF4EA46A) : Color(0xFF4EA46A),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Material(
+                color: selectedValue == i ? const Color(0xFFCFF5D4) : Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(
+                    color: selectedValue == i ? const Color(0xFF005C57) : Colors.grey.shade300,
+                    width: 2,
                   ),
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: selectedIndustry == i,
-                        onChanged: (_) => setState(() => selectedIndustry = i),
-                        activeColor: Color(0xFF005C57),
-                      ),
-                      Expanded(
-                        child: Text(
-                          industries[i],
-                          style: const TextStyle(fontSize: 16),
+                ),
+                child: InkWell(
+                  onTap: () => onChanged(i),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: selectedValue == i,
+                          onChanged: (value) => onChanged(i),
+                          activeColor: const Color(0xFF005C57),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                         ),
-                      ),
-                    ],
+                        Expanded(
+                          child: Text(
+                            options[i],
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             );
           }),
-          const SizedBox(height: 24),
-          Center(
-          child:SizedBox(
-            width: 110,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: selectedIndustry != null ? Color(0xFF005C57) : Colors.grey,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: const EdgeInsets.symmetric(horizontal:30, vertical: 14),
-              ),
-              onPressed: selectedIndustry != null
-                  ? () => setState(() => _step += 1)
-                  : null,
-              child: const Text(
-                "Next",
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildExperienceStep() {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "What is your level of experience in the startup or business world?",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          const SizedBox(height: 18),
-          ...List.generate(experience.length, (i) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: InkWell(
-                onTap: () => setState(() => selectedExperience = i),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: selectedExperience == i ? Color(0xFF4EA46A) : Color(0xFF4EA46A),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
-                  ),
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: selectedExperience == i,
-                        onChanged: (_) => setState(() => selectedExperience = i),
-                        activeColor: Color(0xFF005C57),
-                      ),
-                      Expanded(
-                        child: Text(
-                          experience[i],
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }),
-          const SizedBox(height: 24),
-          Center(
-          child:SizedBox(
-            width: 110,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: selectedExperience != null ? Color(0xFF005C57) : Colors.grey,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: const EdgeInsets.symmetric(horizontal:30, vertical: 14),
-              ),
-              onPressed: selectedExperience != null
-                  ? () => setState(() => _step += 1)
-                  : null,
-              child: const Text(
-                "Next",
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildFooter() {
+    bool isLastStep = _currentStep == _totalSteps - 1;
+    bool isCompleted = _isStepCompleted();
 
-  Widget _buildStageStep() {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "What best describes the current stage of your startup or business idea?",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          const SizedBox(height: 18),
-          ...List.generate(stage.length, (i) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: InkWell(
-                onTap: () => setState(() => selectedStage = i),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: selectedStage == i ? Color(0xFF4EA46A) : Color(0xFF4EA46A),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
-                  ),
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: selectedStage == i,
-                        onChanged: (_) => setState(() => selectedStage = i),
-                        activeColor: Color(0xFF005C57),
-                      ),
-                      Expanded(
-                        child: Text(
-                          stage[i],
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }),
-          const SizedBox(height: 24),
-          Center(
-          child:SizedBox(
-            width: 110,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: selectedStage!= null ? Color(0xFF005C57) : Colors.grey,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: const EdgeInsets.symmetric(horizontal:30, vertical: 14),
-              ),
-              onPressed: selectedStage != null
-                  ? () => setState(() => _step += 1)
-                  : null,
-              child: const Text(
-                "Next",
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          ),
-        ],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Colors.grey.shade200, width: 1)),
       ),
-    );
-  }
-
-  Widget _buildPlanningStep() {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            "When are you planning to launch or significantly scale your business?",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          const SizedBox(height: 18),
-          ...List.generate(planning.length, (i) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: InkWell(
-                onTap: () => setState(() => selectedPlanning = i),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: selectedPlanning == i ? Color(0xFF4EA46A) : Color(0xFF4EA46A),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
-                  ),
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: selectedPlanning == i,
-                        onChanged: (_) => setState(() => selectedPlanning = i),
-                        activeColor: Color(0xFF005C57),
-                      ),
-                      Expanded(
-                        child: Text(
-                          planning[i],
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }),
-          const SizedBox(height: 24),
-          Center(
-          child:SizedBox(
-            width: 110,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: selectedPlanning != null ? Color(0xFF005C57) : Colors.grey,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: const EdgeInsets.symmetric(horizontal:30, vertical: 14),
-              ),
-              onPressed: selectedPlanning != null
-                  ? () => setState(() => _step += 1)
-                  : null,
+          // Back Button
+          if (_currentStep > 0)
+            TextButton(
+              onPressed: _previousPage,
               child: const Text(
-                "Next",
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                "Back",
+                style: TextStyle(color: Colors.grey, fontSize: 16),
               ),
-            ),
-          ),
-          ),
-        ],
-      ),
-    );
-  }
+            )
+          else
+            const SizedBox(), // Empty space to keep "Next" button on the right
 
-  Widget _buildFundingStep() {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "What is your estimated funding requirement or target?",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          const SizedBox(height: 18),
-          ...List.generate(funding.length, (i) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: InkWell(
-                onTap: () => setState(() => selectedFunding = i),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: selectedFunding == i ? Color(0xFF4EA46A) : Color(0xFF4EA46A),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
-                  ),
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: selectedFunding == i,
-                        onChanged: (_) => setState(() => selectedFunding = i),
-                        activeColor: Color(0xFF005C57),
-                      ),
-                      Expanded(
-                        child: Text(
-                          funding[i],
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }),
-          const SizedBox(height: 24),
-          Center(
-          child:SizedBox(
-            width: 110,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: selectedFunding != null ? Color(0xFF005C57) : Colors.grey,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: const EdgeInsets.symmetric(horizontal:30, vertical: 14),
-              ),
-              onPressed: selectedFunding!= null
-                  ? () async {
-                    await _saveCheckboxDataToFirestore(); // Save answers + questionnaireCompleted
-                    Navigator.pushReplacementNamed(context, '/home');
+          // Next/Submit Button
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isCompleted ? const Color(0xFF005C57) : Colors.grey,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+            ),
+            onPressed: isCompleted
+                ? () async {
+                    if (isLastStep) {
+                      await _saveCheckboxDataToFirestore();
+                      Navigator.pushReplacementNamed(context, '/home');
+                    } else {
+                      _nextPage();
+                    }
                   }
                 : null,
-              child: const Text(
-                "Next",
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
+            child: Text(
+              isLastStep ? "Submit" : "Next",
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
             ),
-          ),
           ),
         ],
       ),

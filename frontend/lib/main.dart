@@ -5,8 +5,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'mentor_page.dart';
 import 'faq.dart';
-import 'chatbotPage.dart';
+import 'chatbot_page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'widgets/profile_dialog.dart';
 import 'firebase_options.dart';
 import 'providers/quiz_provider.dart';
 import 'quiz_launcher_page.dart';
@@ -72,6 +74,31 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  Future<void> _handleLogout() async {
+    await FirebaseAuth.instance.signOut();
+    // Use `pushNamedAndRemoveUntil` to clear the navigation stack
+    // so the user can't press the back button to get back to the home screen.
+    if (mounted) {
+      Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+    }
+  }
+
+  void _showProfileDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return ProfileDialog(
+          onLogout: () {
+            // First, close the dialog
+            Navigator.of(dialogContext).pop(); 
+            // Then, perform the logout
+            _handleLogout();
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,11 +144,14 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 ),
-                SvgPicture.asset(
-                  'assets/icons/Frame.svg',
-                  width: 28,
-                  height: 28,
-                  color: Color(0xFFCFF5D4),
+                GestureDetector(
+                  onTap: _showProfileDialog, // Call the new function
+                  child: SvgPicture.asset(
+                    'assets/icons/Frame.svg',
+                    width: 28,
+                    height: 28,
+                    colorFilter: const ColorFilter.mode(Color(0xFFCFF5D4), BlendMode.srcIn),
+                  ),
                 ),
               ],
             ),

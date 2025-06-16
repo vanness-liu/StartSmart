@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/quiz_models.dart';
-import '../services/api_service.dart';
+import '../services/quiz_api_service.dart';
 
 class QuizProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
@@ -46,20 +47,19 @@ class QuizProvider with ChangeNotifier {
 
     try {
       final result = await _apiService.evaluateQuiz(_answers);
-      
       final prefs = await SharedPreferences.getInstance();
-      final resultData = {
-        'title': result.title,
-        'score': result.score,
-        'done_well': result.doneWell,
-        'areas_to_improve': result.areasToImprove,
-      };
-      await prefs.setString('lastQuizResult', json.encode(resultData));
+
+      final user = FirebaseAuth.instance.currentUser;
+      final userKey = user != null ? 'lastQuizResult_${user.uid}' : 'lastQuizResult_guest';
+      
+      final resultData = result.toJson();
+      await prefs.setString(userKey, json.encode(resultData));
 
       onQuizCompleted(result);
     } catch (e) {
       onError(e.toString());
     } finally {
+      _isLoading = false;
     }
   }
 

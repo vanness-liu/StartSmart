@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'checkbox_page.dart'; 
 
 class LoginPage extends StatefulWidget {
@@ -24,16 +25,82 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-// Future<bool> hasCompletedQuestionnaire(String uid) async {
-//     final doc = await FirebaseFirestore.instance
-//         .collection('users')
-//         .doc(uid)
-//         .collection('questionnaire')
-//         .doc('startupProfile')
-//         .get();
+  Future<void> _handleGoogleSignIn() async {
+    if (_isLoading) return;
+    setState(() => _isLoading = true);
 
-//     return doc.exists;
-//   }
+    try {
+      // 1. Trigger the Google authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        // The user canceled the sign-in
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      // 2. Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // 3. Create a new credential for Firebase
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // 4. Sign in to Firebase with the credential
+      final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final User user = userCredential.user!;
+
+      // 5. Check if this is a new user or existing user in Firestore
+      final userDocRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final userDoc = await userDocRef.get();
+
+      if (!userDoc.exists) {
+        // --- This is a NEW user ---
+        // Create their document in Firestore with data from their Google account
+        await userDocRef.set({
+          'name': user.displayName ?? 'New User',
+          'email': user.email,
+          'photoURL': user.photoURL, // This is where you get the picture!
+          'createdAt': Timestamp.now(),
+          'questionnaireCompleted': false, // They haven't done the questionnaire yet
+        });
+        
+        // Navigate them to the questionnaire
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const CheckboxPage()),
+          );
+        }
+
+      } else {
+        // --- This is an EXISTING user ---
+        // Check if they have completed the questionnaire
+        final userData = userDoc.data();
+        final hasCompleted = userData != null && userData['questionnaireCompleted'] == true;
+        
+        if (hasCompleted) {
+          Navigator.pushReplacementNamed(context, '/home');
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const CheckboxPage()),
+          );
+        }
+      }
+
+    } catch (e) {
+      setState(() {
+        _error = "Failed to sign in with Google. Please try again.";
+      });
+      print("Google Sign-In Error: $e");
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
 
   Future<void> _handleLogin() async {
     //if (_isLoading) return;
@@ -244,6 +311,45 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                           ),
                         ),
+
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          child: Row(
+                            children: [
+                              Expanded(child: Divider()),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text("OR", style: TextStyle(color: Colors.grey)),
+                              ),
+                              Expanded(child: Divider()),
+                            ],
+                          ),
+                        ),
+
+                        ElevatedButton.icon(
+                          onPressed: _isLoading ? null : _handleGoogleSignIn,
+                          icon: SvgPicture.asset(
+                            'assets/icons/google.svg', // Make sure you have this asset
+                            height: 24,
+                          ),
+                          label: const Text(
+                            "Sign in with Google",
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(color: Colors.grey.shade300),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                        ),
+                        
                         if (_error != null)
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),

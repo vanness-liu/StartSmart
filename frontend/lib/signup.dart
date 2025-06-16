@@ -216,8 +216,16 @@ class _SignupPageState extends State<SignupPage> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                color: Color(0xFF005C57), 
+                                width: 2.0,
+                              ),
+                            ),
                             filled: true,
                             fillColor: const Color(0xFFF7F7F7),
+                            
                           ),
                         ),
                         const SizedBox(height: 16),
