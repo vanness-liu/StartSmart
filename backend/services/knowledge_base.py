@@ -4,10 +4,10 @@
 # original 132 rules. The rules are separated into 'strategic' and 'procedural'
 # to power the Query Router architecture. All critical concepts have been retained.
 
-# --- STRATEGIC KNOWLEDGE BASE ---
+#  STRATEGIC KNOWLEDGE BASE 
 # For open-ended, advisory questions (e.g., "Is my idea good?", "What should I do?").
 STRATEGIC_KB = [
-    # --- Theme: Idea Viability, Competitiveness & Market Positioning ---
+    #  Theme: Idea Viability, Competitiveness & Market Positioning 
     {
         'if': "a user is unsure about their competitiveness in the market",
         'then': "You should perform a SWOT analysis (Strengths, Weaknesses, Opportunities, Threats) and identify at least 3 direct competitors to benchmark their products, pricing, and value propositions. This will help you find your unique advantage."
@@ -53,7 +53,7 @@ STRATEGIC_KB = [
         'then': "If your business can solve both a market need and a social issue, such as empowering marginalized communities, it achieves both sustainability and impact, making it more valuable and attractive to funders."
     },
     
-    # --- Theme: Business Model Types & Implications ---
+    #  Theme: Business Model Types & Implications 
     {
         'if': "a user's target customer is businesses",
         'then': "Your business model is B2B (Business-to-Business). You should expect longer sales cycles, formal contracts, and larger order volumes. Focus on building professional relationships and demonstrating clear ROI to business clients."
@@ -71,7 +71,7 @@ STRATEGIC_KB = [
         'then': "Your business model is a Marketplace. You'll need to manage a reliable platform, build trust among users, and typically earn through transaction fees or listing fees."
     },
 
-    # --- Theme: Founder Readiness, Mindset & Common Mistakes ---
+    #  Theme: Founder Readiness, Mindset & Common Mistakes 
     {
         'if': "a user is uncertain if they are ready to start a business or underestimating entrepreneurial challenges",
         'then': "You need to reflect on your personal goals, your willingness to take significant financial and personal risks, and your ability to handle high levels of pressure and stress. Be aware of the most common entrepreneurial challenges: potential financial instability, major sacrifices to your personal life and free time, and significant mental stress. Create a personal readiness checklist to ensure you are committed."
@@ -109,7 +109,7 @@ STRATEGIC_KB = [
         'then': "Be careful. In the early stage, prioritize product development and validating your idea over heavy spending on marketing or hiring. Prove demand first."
     },
 
-    # --- Theme: Team Building & Partnerships ---
+    #  Theme: Team Building & Partnerships 
     {
         'if': "a user is deciding whether to include someone in their team",
         'then': "You should not include a potential team member if they cannot contribute meaningfully to your business model, even if you trust them personally. Skills and contribution come first."
@@ -139,7 +139,7 @@ STRATEGIC_KB = [
         'then': "You should actively seek endorsements or partnerships with credible institutions like your university's entrepreneurship center, MaGIC, or MDEC to build trust and visibility effectively."
     },
 
-    # --- Theme: Launch Timing & Market Conditions ---
+    #  Theme: Launch Timing & Market Conditions 
     {
         'if': "a user is wondering if it's a good time to enter the market",
         'then': "If the economic situation is favorable and stable, it is generally a good time to enter the market. Also consider if there is rising consumer demand and government support for your industry."
@@ -161,7 +161,7 @@ STRATEGIC_KB = [
         'then': "The ideal time to launch is when the economy is stable, consumer purchasing power is high, and you have clear evidence of market demand for your product with minimal competition."
     },
 
-    # --- Theme: Common Startup Misconceptions ---
+    #  Theme: Common Startup Misconceptions 
     {
         'if': "a user believes that a large amount of capital is required to start a business",
         'then': "You should understand that startups can begin with minimal capital and grow gradually. Focus on low-cost models and bootstrapping first."
@@ -179,17 +179,17 @@ STRATEGIC_KB = [
         'then': "You should know that self-managed marketing can be very effective and is a skill you can learn over time. It also helps you stay closer to your customers."
     },
     
-    # --- Theme: Overwhelm and Progress Tracking ---
+    #  Theme: Overwhelm and Progress Tracking 
     {
         'if': "a user is feeling overwhelmed with information or tasks",
         'then': "To manage feeling overwhelmed, use a dashboard or a simple to-do list to track your progress. Focus on completing only one critical task at a time, such as validating your idea this week, before moving on to the next."
     }
 ]
 
-# --- PROCEDURAL KNOWLEDGE BASE ---
+#  PROCEDURAL KNOWLEDGE BASE 
 # For direct, factual, "how-to" questions (e.g., "How do I register?", "What is an LLP?").
 PROCEDURAL_KB = [
-    # --- Theme: Business Planning & Validation Procedures ---
+    #  Theme: Business Planning & Validation Procedures 
     {
         'if': "a user wants to know how to validate their business idea",
         'then': "To validate your idea, first conduct 10-15 'customer discovery' interviews with your target audience to understand their problems. Based on their feedback, create a Minimum Viable Product (MVP)—the simplest version of your product—and test it with a small group of users to see if they will actually use it."
@@ -215,7 +215,7 @@ PROCEDURAL_KB = [
         'then': "To perform a SWOT analysis, create four categories: Strengths (your internal advantages), Weaknesses (your internal limitations), Opportunities (external factors you can exploit), and Threats (external risks you face). List at least 3-5 items in each category and use this analysis to make strategic decisions."
     },
 
-    # --- Theme: Legal & Registration Procedures ---
+    #  Theme: Legal & Registration Procedures 
     {
         'if': "a user is asking for a step-by-step checklist on how to start their first business",
         'then': "For your first business, follow this checklist: 1) Choose a business name and check availability, 2) Select your business structure (Sole Proprietorship, Partnership, LLP, or Sdn Bhd), 3) Register with SSM via EzBiz portal, 4) Apply for necessary licenses if your business is regulated, 5) Register for tax with LHDN, 6) Open a business bank account. It's wise to consult with a business registration expert for guidance."
@@ -273,7 +273,7 @@ PROCEDURAL_KB = [
         'then': "You should consult a legal advisor to help you pick the right structure (e.g., Partnership, LLP, Sdn Bhd) to protect your interests and ensure you comply with all local laws."
     },
 
-    # --- Theme: Funding & Financial Procedures ---
+    #  Theme: Funding & Financial Procedures 
     {
         'if': "a user needs to estimate their startup costs",
         'then': "You must perform a detailed financial assessment before you start. Create a list of all expected one-time and recurring costs, including registration fees, licensing, inventory, software, and your first few months of operational expenses."
@@ -307,7 +307,7 @@ PROCEDURAL_KB = [
         'then': "You must talk to a financial advisor or mentor immediately to find ways to extend your runway, either by cutting costs or securing new funding."
     },
 
-    # --- Theme: Marketing & Sales Procedures ---
+    #  Theme: Marketing & Sales Procedures 
     {
         'if': "a user wants to know how to do marketing with a limited budget",
         'then': "To market with a limited budget, focus on organic SEO (Search Engine Optimization) to get your website found on Google, and create engaging content on 1-2 social media platforms where your target audience is most active. Make sure to engage directly with your first 100 users to build a strong community."
@@ -329,7 +329,7 @@ PROCEDURAL_KB = [
         'then': "To make extra money with your app or website, you can integrate affiliate marketing links from platforms like Shopee, Lazada, or Involve Asia. When a user clicks a link from your site and makes a purchase, you earn a small commission."
     },
 
-    # --- Theme: Team, Networking & Pitching Procedures ---
+    #  Theme: Team, Networking & Pitching Procedures 
     {
         'if': "a user needs advice on building their founding team",
         'then': "You should seek advice on team building to ensure you choose co-founders who balance your weaknesses and share your vision. A complementary team is crucial for success."
