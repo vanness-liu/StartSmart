@@ -49,16 +49,21 @@ To develop an **affordable and user-friendly rule-based expert system** that:
 ## 🏗️ Project Structure
 
 ```
-startsmart/
-├── api/                  # FastAPI endpoints
-│   ├── chat.py           # Chatbot endpoint logic (main feature)
-│   ├── quiz.py           # Startup readiness assessment
-│   └── mentor.py         # Booking prototype
-├── rules/                # Strategic & Procedural rule-based KBs
-├── embeddings/           # Sentence embeddings index (BAAI model)
-├── frontend/             # React frontend (not detailed here)
-├── utils/                # Utility functions (decomposition, routing, etc.)
-└── models/               # Pydantic schemas
+StartSmart/ <br>
+├── backend/ # FastAPI Python backend 
+│ ├── api/ # API endpoints (routers)
+│ ├── core/ # Core settings, configurations
+│ ├── models/ # Pydantic schemas 
+│ ├── services/ # Business logic, external API integrations (Firebase, Gemini)
+│ ├── .env # Local environment variables (Gitignored)
+│ ├── firebase_credentials.json # Firebase Admin SDK key (Gitignored) 
+│ ├── main.py # Main FastAPI application 
+│ └── requirements.txt 
+├── frontend/ # Flutter application 
+│ ├── lib/ 
+│ └── pubspec.yaml 
+├── .gitignore 
+└── README.md 
 ```
 
 
@@ -94,7 +99,7 @@ startsmart/
 
 ## 📌 Getting Started
 
-Pre-requisites: Ensure that you have Flutter downloaded!
+Pre-requisites: Ensure that you have Flutter downloaded and Gemini API Key setup in .env of /backend!
 
 1. Clone the repo:
    ```bash
