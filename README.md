@@ -48,6 +48,7 @@ To develop an **affordable and user-friendly rule-based expert system** that:
 
 ## 🏗️ Project Structure
 
+```
 startsmart/
 ├── api/                  # FastAPI endpoints
 │   ├── chat.py           # Chatbot endpoint logic (main feature)
@@ -58,3 +59,57 @@ startsmart/
 ├── frontend/             # React frontend (not detailed here)
 ├── utils/                # Utility functions (decomposition, routing, etc.)
 └── models/               # Pydantic schemas
+```
+
+
+---
+
+## 🛠️ Technologies Used
+
+- **Backend**: Python, FastAPI
+- **Frontend**: HTML/CSS (templated with Jinja2)
+- **Embeddings**: [`BAAI/bge-small-en-v1.5`](https://huggingface.co/BAAI/bge-small-en-v1.5)
+- **Vector Store**: FAISS
+- **Frameworks**: LangChain (for retrieval), Scikit-learn (quiz logic), SQLite
+
+---
+
+## 🔮 Future Improvements
+
+- Full implementation of mentor scheduling and chat
+- Integrate more dynamic feedback into the quiz module
+- Support multi-language content
+- Expand knowledge base with expert-verified content
+- Add analytics dashboard for mentor and startup insights
+
+---
+
+## 🧑‍💼 Target Users
+
+- University students with startup ideas
+- First-time entrepreneurs seeking structured guidance
+- Incubators or universities supporting student ventures
+
+---
+
+## 📌 Getting Started
+
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/yourusername/startsmart.git
+   cd startsmart
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+4. Run the app:
+   ```bash
+   uvicorn main:app --reload
+
+## 🤝 Contributors
+
+Team BizMind
+1. Teoh Min Zi
+2. Vanness Liu Chuen Wei
+3. Ong Zhao Qian
+4. Tan Yi Rou
+5. Lee Shin Yen
