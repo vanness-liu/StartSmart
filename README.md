@@ -94,15 +94,29 @@ startsmart/
 
 ## 📌 Getting Started
 
+Pre-requisites: Ensure that you have Flutter downloaded!
+
 1. Clone the repo:
    ```bash
    git clone https://github.com/yourusername/startsmart.git
    cd startsmart
 2. Install dependencies:
    ```bash
+   cd backend
    pip install -r requirements.txt
-4. Run the app:
+4. Run the app simultaneously:
+   Frontend:
    ```bash
+   cd frontend
+   flutter pub get
+   flutter run
+
+   Backend:
+   ```bash
+   cd backend
+   python3 -m venv venv
+   source venv/bin/activate   # macOS/Linux
+   # venv\Scripts\activate    # On Windows
    uvicorn main:app --reload
 
 ## 🤝 Contributors
